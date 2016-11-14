@@ -1,5 +1,14 @@
 
 
+%Defines if X is member of list L
+
+member(X, [X|Tail]).
+member(X, [Head|Tail]) :-
+	member(X, Tail).
+
+
+
+
 %Actions
 
 pickup(X) :-

@@ -13,21 +13,26 @@ del(X, [Head|L] , [Head|L1]) :-
 	member(X,L),
 	del(X,L,L1).
 
+%Adds X to head of list
 
-
+add(X,L, [X|L]).
 
 
 %Actions
 
+
 pickup(X) :-
 	not(member(held(_), Ambient)),
 	not(member(on(_,X), Ambient)),
-	remove&add( on(X,_), held(X), Ambient).
+        del( on(X,_), Ambient, Ambient1),
+	add(held(X), Ambient1, Ambient2).
 
 put_on_table(X) :-
 	member(held(X), Ambient),
-	remove&add(held(X) , on(X,m), Ambient).
+        del(held(X), Ambient, Ambient1),
+	add(on(X,m), Ambient1, Ambient2).
 
-putdonw(X,Y) :-
+putdown(X,Y) :-
 	member(held(X), Ambient),
-	remove&add(held(X), on(X,Y), Ambient).
+        del(held(X), Ambient, Ambient1),
+	add(on(X,Y), Ambient1, Ambient2).

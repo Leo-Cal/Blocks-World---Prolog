@@ -36,3 +36,12 @@ putdown(X,Y) :-
 	member(held(X), Ambient),
         del(held(X), Ambient, Ambient1),
 	add(on(X,Y), Ambient1, Ambient2).
+
+%Solving
+
+solve(Ambient1, Ambient1).
+solve(Ambient1,Ambient2) :-
+	move(Ambient1, Move, Intermediary),
+	solve(Intermediary, Ambient2).
+
+

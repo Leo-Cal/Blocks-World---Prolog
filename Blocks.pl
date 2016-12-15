@@ -9,7 +9,6 @@
 block(a).
 block(b).
 block(c).
-clear(hand).
 on(a,table).
 on(b,table).
 on(c,table).
@@ -17,6 +16,7 @@ clear(a).
 clear(b).
 clear(c).
 clear(table).
+clear(hand).
 
 %Basic Actions
 
@@ -58,6 +58,21 @@ put_on_table(X) :-
 %Forced Actions
    %(these actions are designed to achieve a certain goal independent of the state on which they are called on).
 
+
+force_put_on_table(A) :-
+	on(A,table).
+
+force_put_on_table(A):-
+      %precond
+	block(A),
+	force_pickup(A),
+      %effects
+        assert(on(A,table)),
+	assert(clear(hand)),
+	assert(clear(A)),
+	retract(held(A)).
+
+
 force_putdown(A,B):-
 	on(A,B).
 
@@ -87,13 +102,13 @@ force_pickup(A) :-
 	retract(on(A,_)).
 
 force_clear(A):-
-	not(on(_,A)).
+	clear(A).
 
 force_clear(A) :-
       %precond
 	on(X,A),
 	force_clear(X),
-	force_putdown(X,table),
+	force_put_on_table(X),
       %effects
         assert(clear(A)),
 	retract(on(X,A)).

@@ -18,7 +18,7 @@ clear(b).
 clear(c).
 clear(table).
 
-%Actions
+%Basic Actions
 
 pickup(X) :-
       %precond
@@ -55,5 +55,58 @@ put_on_table(X) :-
 	assert(clear(X)),
 	retract(held(X)).
 
+%Forced Actions
+   %(these actions are designed to achieve a certain goal independent of the state on which they are called on).
+
+force_putdown(A,B):-
+	on(A,B).
+
+force_putdown(A,B) :-
+      %precond
+	block(A),
+	block(B),
+	force_pickup(A),
+      %effects
+        assert(on(A,B)),
+	assert(clear(hand)),
+	assert(clear(A)),
+	retract(held(A)),
+	retract(clear(B)).
+
+force_pickup(A) :-
+	held(A).
+
+force_pickup(A) :-
+      %precond
+	block(A),
+	force_clear(A),
+      %effects
+        assert(held(A)),
+	retract(clear(A)),
+	retract(clear(hand)),
+	retract(on(A,_)).
+
+force_clear(A):-
+	not(on(_,A)).
+
+force_clear(A) :-
+      %precond
+	on(X,A),
+	force_clear(X),
+	force_putdown(X,table),
+      %effects
+        assert(clear(A)),
+	retract(on(X,A)).
+
+
 %Solving
+
+solve_all([G|L]) :-
+	solve(G),
+	solve_all(L).
+
+solve(G) :-
+	G.
+solve(on(A,B)):-
+	force_putdown(A,B).
 

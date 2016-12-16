@@ -25,8 +25,10 @@ pickup(X) :-
 	block(X),
 	clear(hand),
 	clear(X),
+	on(X,K),
       %effects
 	assert(held(X)),
+	assert(clear(K)),
 	retract(clear(X)),
 	retract(clear(hand)),
 	retract(on(X,_)).
@@ -67,10 +69,7 @@ force_put_on_table(A):-
 	block(A),
 	force_pickup(A),
       %effects
-        assert(on(A,table)),
-	assert(clear(hand)),
-	assert(clear(A)),
-	retract(held(A)).
+        put_on_table(A).
 
 
 force_putdown(A,B):-
@@ -82,11 +81,7 @@ force_putdown(A,B) :-
 	block(B),
 	force_pickup(A),
       %effects
-        assert(on(A,B)),
-	assert(clear(hand)),
-	assert(clear(A)),
-	retract(held(A)),
-	retract(clear(B)).
+        putdown(A,B).
 
 force_pickup(A) :-
 	held(A).
@@ -96,10 +91,7 @@ force_pickup(A) :-
 	block(A),
 	force_clear(A),
       %effects
-        assert(held(A)),
-	retract(clear(A)),
-	retract(clear(hand)),
-	retract(on(A,_)).
+        pickup(A).
 
 force_clear(A):-
 	clear(A).
@@ -107,7 +99,6 @@ force_clear(A):-
 force_clear(A) :-
       %precond
 	on(X,A),
-	force_clear(X),
 	force_put_on_table(X),
       %effects
         assert(clear(A)),

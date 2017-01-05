@@ -11,9 +11,9 @@ block(b).
 block(c).
 on(a,table).
 on(b,table).
-on(c,table).
+on(c,b).
 clear(a).
-clear(b).
+
 clear(c).
 clear(table).
 clear(hand).
@@ -79,6 +79,7 @@ force_putdown(A,B) :-
       %precond
 	block(A),
 	block(B),
+	force_clear(B),
 	force_pickup(A),
       %effects
         putdown(A,B).
@@ -99,10 +100,9 @@ force_clear(A):-
 force_clear(A) :-
       %precond
 	on(X,A),
-	force_put_on_table(X),
+	force_put_on_table(X).
       %effects
-        assert(clear(A)),
-	retract(on(X,A)).
+
 
 
 %Solving

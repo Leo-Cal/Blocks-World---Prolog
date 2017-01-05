@@ -1,6 +1,7 @@
 :-dynamic clear/1.
 :-dynamic on/2.
 :-dynamic held/1.
+:-dynamic move/1.
 
 
 
@@ -31,7 +32,8 @@ pickup(X) :-
 	assert(clear(K)),
 	retract(clear(X)),
 	retract(clear(hand)),
-	retract(on(X,_)).
+	retract(on(X,_)),
+	assert(move(pickup(X))).
 
 putdown(X,A) :-
       %precond
@@ -45,7 +47,9 @@ putdown(X,A) :-
 	assert(on(X,A)),
 	assert(clear(X)),
 	retract(clear(A)),
-	retract(held(X)).
+	retract(held(X)),
+	assert(move(putdown(X,A))).
+
 
 put_on_table(X) :-
       %precond
@@ -55,7 +59,8 @@ put_on_table(X) :-
         assert(clear(hand)),
 	assert(on(X,table)),
 	assert(clear(X)),
-	retract(held(X)).
+	retract(held(X)),
+	assert(move(put_on_table(X))).
 
 %Forced Actions
    %(these actions are designed to achieve a certain goal independent of the state on which they are called on).
@@ -106,7 +111,7 @@ force_clear(A) :-
 
 
 %Solving
-
+solve_all([]).
 solve_all([G|L]) :-
 	solve(G),
 	solve_all(L).
@@ -115,4 +120,6 @@ solve(G) :-
 	G.
 solve(on(A,B)):-
 	force_putdown(A,B).
+solve(on(A,table)):-
+	force_put_on_table(A).
 

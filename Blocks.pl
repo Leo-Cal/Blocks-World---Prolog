@@ -3,21 +3,46 @@
 :-dynamic held/1.
 :-dynamic move/1.
 
-
-
-%Initial State
-
 block(a).
 block(b).
 block(c).
-on(a,table).
-on(b,table).
-on(c,b).
-clear(a).
-
-clear(c).
-clear(table).
 clear(hand).
+clear(table).
+
+%Initializer
+
+init([]) :-
+	true,
+	init_clear([a,b,c]).
+
+
+init([H|L]) :-
+	initialize(H),
+	init(L).
+
+initialize(on(X,Y)) :-
+	assert(on(X,Y)).
+
+
+init_clear([]) :-
+	true.
+
+init_clear([H|L]) :-
+	(initialize_clear(H); true),
+	init_clear(L).
+
+initialize_clear(X) :-
+	not(on(_,X)),
+	assert(clear(X)).
+
+
+%Reset
+
+reset :-
+	retractall(on(_,_)),
+	retractall(clear(_)),
+	assert(clear(table)),
+	assert(clear(hand)).
 
 %Basic Actions
 

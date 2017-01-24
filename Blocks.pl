@@ -41,6 +41,7 @@ initialize_clear(X) :-
 reset :-
 	retractall(on(_,_)),
 	retractall(clear(_)),
+	retractall(move(_)),
 	assert(clear(table)),
 	assert(clear(hand)).
 
@@ -137,7 +138,9 @@ force_clear(A) :-
 
 %Solving
 solve_all([]).
+
 solve_all([G|L]) :-
+	List = [G|L],
 	solve(G),
 	solve_all(L).
 

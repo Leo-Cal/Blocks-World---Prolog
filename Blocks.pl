@@ -17,7 +17,7 @@ init([]) :-
 
 
 init([H|L]) :-
-	initialize(H),
+  initialize(H),
 	init(L).
 
 initialize(on(X,Y)) :-
@@ -137,17 +137,43 @@ force_clear(A) :-
 
 
 %Solving
-solve_all([]).
 
-solve_all([G|L]) :-
-	List = [G|L],
-	solve(G),
-	solve_all(L).
+solve([H|R],[G|L]) :-
+  init([H|R]),
+	fund_node([on(a,table),on(b,table),on(c,table)]),
+	solve_level2([G|L]),
+	solve_level3([G|L]).	
 
-solve(G) :-
+%Fund_node
+   %Takes from the initial state to a state with all blocks on table
+
+fund_node([]).
+
+fund_node([H|L]) :-
+		do(H),
+		fund_node(L).
+
+%solve_level2
+   %Puts correct block on 2nd level of the pile
+
+solve_level2([G|L]) :-
+	 %find_level2([G|L]),
+   %put_level2.
+
+%solve_level3
+	%Puts correct block (if there is one) on top level of the pile
+
+solve_level3([G|L]) :-
+	 %find_level3([G|L]),
+	 %put_level3([G|L]).
+
+
+
+%Doing
+
+do(G) :-
 	G.
-solve(on(A,B)):-
+do(on(A,B)):-
 	force_putdown(A,B).
-solve(on(A,table)):-
+do(on(A,table)):-
 	force_put_on_table(A).
-

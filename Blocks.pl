@@ -135,44 +135,28 @@ force_clear(A) :-
       %effects
 
 
-
 %Solving
 
 solve([H|R],[G|L]) :-
   init([H|R]),
-	fund_node([on(a,table),on(b,table),on(c,table)]),
-	solve_level2([G|L]),
-	solve_level3([G|L]).	
+  solve_all([G|L], [G|L]).
 
-%Fund_node
-   %Takes from the initial state to a state with all blocks on table
+solve_all([G|L],Glist) :-
+	G,
+	solve_all(L,Glist).
 
-fund_node([]).
+solve_all([G|_], Glist) :-
+	do(G),
+	solve_all(Glist,Glist).
 
-fund_node([H|L]) :-
-		do(H),
-		fund_node(L).
-
-%solve_level2
-   %Puts correct block on 2nd level of the pile
-
-solve_level2([G|L]) :-
-	 %find_level2([G|L]),
-   %put_level2.
-
-%solve_level3
-	%Puts correct block (if there is one) on top level of the pile
-
-solve_level3([G|L]) :-
-	 %find_level3([G|L]),
-	 %put_level3([G|L]).
-
+solve_all([],_).
 
 
 %Doing
 
 do(G) :-
 	G.
+
 do(on(A,B)):-
 	force_putdown(A,B).
 do(on(A,table)):-
